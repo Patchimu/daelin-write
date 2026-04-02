@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daelin Write</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="logo" onclick="showHome()">✦ Daelin Write</div>
+    <div class="project-title" id="topbar-project-title"></div>
+    <div class="topbar-actions" id="topbar-actions" style="display:none">
+      <button class="btn btn-secondary btn-sm" onclick="showCodexModal()">Codex</button>
+      <button class="btn btn-secondary btn-sm" onclick="showSettingsModal()">⚙ Config</button>
+      <button class="btn btn-secondary btn-sm" onclick="showExportModal()">↓ Exportar</button>
+    </div>
+    <div class="topbar-actions" id="topbar-home-actions">
+      <button class="btn btn-secondary btn-sm" onclick="showSettingsModal()">⚙ Config</button>
+    </div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div id="home-page">
+    <div class="home-header">
+      <h1>Daelin Write</h1>
+      <p>Seu estúdio de escrita pessoal</p>
+    </div>
+    <div class="projects-grid" id="projects-grid">
+      <div class="new-project-card" onclick="showNewProjectModal()">
+        <span style="font-size:24px">+</span>
+        <span>Novo Projeto</span>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="showImportModal()">↑ Importar do Outline Forge</button>
+  </div>
+
+  <!-- EDITOR PAGE (hidden initially) -->
+  <div id="editor-page" style="display:none; flex:1; overflow:hidden; display:none; flex-direction:row;">
+    
+    <!-- LEFT SIDEBAR -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <span>Capítulos</span>
+        <button class="btn-icon" onclick="showAddChapterModal()" title="Novo capítulo">+</button>
+      </div>
+      <div class="sidebar-tree" id="sidebar-tree"></div>
+      <div class="sidebar-footer">
+        <div id="project-word-count" style="font-size:11px; color:var(--text3); text-align:center"></div>
+      </div>
+    </div>
+
+    <!-- CENTER EDITOR -->
+    <div id="editor-area">
+      <div id="editor-toolbar" style="display:none">
+        <input type="text" id="scene-title-input" placeholder="Título da cena..." oninput="scheduleSceneSave()">
+        <span id="save-status"></span>
+        <span id="word-count">0 palavras</span>
+      </div>
+      
+      <div id="editor-content-area" style="position:relative">
+        <div class="empty-editor" id="empty-state">
+          <div class="icon">✦</div>
+          <p>Selecione uma cena para começar a escrever</p>
+        </div>
+        <textarea id="scene-editor" style="display:none" placeholder="Escreva sua cena aqui..." oninput="scheduleSceneSave()"></textarea>
+        
+        <div id="generating-overlay">
+          <span class="generating-text">Gerando cena...</span>
+        </div>
+      </div>
+
+      <!-- CHAT -->
+      <div id="chat-panel">
+        <div id="chat-header">
+          <span>Chat com a IA sobre o projeto</span>
+          <button class="btn-icon btn-sm" onclick="clearChat()" title="Limpar chat">✕</button>
+        </div>
+        <div id="chat-messages"></div>
+        <div id="chat-input-row">
+          <textarea id="chat-input" rows="1" placeholder="Faça uma pergunta sobre o projeto..." onkeydown="chatKeydown(event)"></textarea>
+          <button class="btn btn-primary btn-sm" onclick="sendChat()">→</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div id="right-panel">
+      <div class="right-tabs">
+        <div class="right-tab active" onclick="switchRightTab('generate')">Gerar</div>
+        <div class="right-tab" onclick="switchRightTab('context')">Contexto</div>
+      </div>
+
+      <div class="right-panel-body">
+        <!-- GENERATE TAB -->
+        <div class="tab-content active" id="tab-generate">
+          <div class="right-section">
+            <div class="right-section-header">Sumário da Cena</div>
+            <div id="scene-summary-display">Selecione uma cena</div>
+          </div>
+
+          <div id="generate-section">
+            <select id="template-select" class="form-select" onchange="loadTemplate()">
+              <option value="">Carregando templates...</option>
+            </select>
+            <button class="btn btn-primary" onclick="generateScene()" id="btn-generate">✦ Gerar Cena</button>
+            <button class="prompt-preview-toggle" id="prompt-preview-toggle" onclick="togglePromptEditor()">editar prompt</button>
+          </div>
+
+          <div id="prompt-editor-area">
+            <div class="prompt-label">System Prompt</div>
+            <textarea class="prompt-textarea" id="custom-system" rows="4"></textarea>
+            <div class="prompt-label">User Prompt <span style="color:var(--text3); font-size:10px; text-transform:none">(use {scene_summary}, {characters}, {location}, {previous_scene}, {style_notes})</span></div>
+            <textarea class="prompt-textarea" id="custom-user" rows="6"></textarea>
+            <div style="display:flex; gap:6px; margin-top:4px">
+              <button class="btn btn-secondary btn-sm" onclick="saveCurrentTemplate()">Salvar template</button>
+              <button class="btn btn-ghost btn-sm" onclick="resetPrompt()">Resetar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTEXT TAB -->
+        <div class="tab-content" id="tab-context">
+          <div class="right-section">
+            <div class="right-section-header">
+              Codex
+              <button class="btn-icon" onclick="showCodexModal()">✎</button>
+            </div>
+          </div>
+          <div id="right-codex"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- NOTIFICATION -->
+<div id="notification"></div>
+
+<!-- MODALS -->
+
+<!-- New Project Modal -->
+<div class="modal-overlay" id="modal-new-project" style="display:none">
+  <div class="modal">
+    <h2>Novo Projeto</h2>
+    <div class="form-group">
+      <label class="form-label">Título</label>
+      <input type="text" class="form-input" id="new-title" placeholder="Nome do seu livro ou saga">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo</label>
+      <div class="type-toggle">
+        <button class="active" onclick="setType('novel', this)">Romance</button>
+        <button onclick="setType('saga', this)">Saga</button>
+      </div>
+      <input type="hidden" id="new-type" value="novel">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Estilo / Notas de Voz</label>
+      <textarea class="form-textarea" id="new-style" placeholder="Descreva seu estilo de escrita, tom, voz, gênero... (isso será injetado nos prompts de IA)"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-new-project')">Cancelar</button>
+      <button class="btn btn-primary" onclick="createProject()">Criar Projeto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-overlay" id="modal-import" style="display:none">
+  <div class="modal">
+    <h2>Importar do Outline Forge</h2>
+    <p style="color:var(--text2); font-size:13px; margin-bottom:16px">Cole o JSON exportado pelo Outline Forge ou use o formato abaixo.</p>
+    <div class="form-group">
+      <label class="form-label">JSON do Outline Forge</label>
+      <textarea class="form-textarea" id="import-json" rows="10" placeholder='{"title":"Meu Romance","type":"novel","style_notes":"...","chapters":[{"title":"Capítulo 1","scenes":[{"title":"Cena 1","summary":"..."}]}],"codex":[{"type":"character","name":"Ana","description":"..."}]}'></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-import')">Cancelar</button>
+      <button class="btn btn-primary" onclick="importProject()">Importar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Chapter Modal -->
+<div class="modal-overlay" id="modal-add-chapter" style="display:none">
+  <div class="modal" style="width:360px">
+    <h2>Novo Capítulo</h2>
+    <div class="form-group">
+      <label class="form-label">Título</label>
+      <input type="text" class="form-input" id="new-chapter-title" placeholder="Ex: Capítulo 1">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-chapter')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addChapter()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Scene Modal -->
+<div class="modal-overlay" id="modal-add-scene" style="display:none">
+  <div class="modal" style="width:400px">
+    <h2>Nova Cena</h2>
+    <input type="hidden" id="new-scene-chapter-id">
+    <div class="form-group">
+      <label class="form-label">Título</label>
+      <input type="text" class="form-input" id="new-scene-title" placeholder="Ex: O encontro">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sumário (opcional)</label>
+      <textarea class="form-textarea" id="new-scene-summary" placeholder="O que acontece nesta cena?"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-scene')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addScene()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="modal-settings" style="display:none">
+  <div class="modal">
+    <h2>Configurações</h2>
+    <div class="form-group">
+      <label class="form-label">Conector de IA</label>
+      <select class="form-select" id="settings-connector" onchange="updateModelPlaceholder()">
+        <option value="openai">OpenAI</option>
+        <option value="claude">Claude (Anthropic)</option>
+        <option value="openrouter">OpenRouter</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Chave de API</label>
+      <input type="password" class="form-input" id="settings-api-key" placeholder="sk-...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Modelo</label>
+      <input type="text" class="form-input" id="settings-model" placeholder="gpt-4o">
+      <div id="model-hint" style="font-size:11px; color:var(--text3); margin-top:4px">Para fine-tune OpenAI: cole o ID ft:gpt-3.5-turbo:org:nome:id</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-settings')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Codex Modal -->
+<div class="modal-overlay" id="modal-codex" style="display:none">
+  <div class="modal" style="width:540px">
+    <h2>Codex</h2>
+    <div id="codex-list" style="margin-bottom:16px; max-height:300px; overflow-y:auto"></div>
+    <hr style="border-color:var(--border); margin-bottom:16px">
+    <h3 style="font-family:var(--font-display); font-size:15px; font-weight:400; margin-bottom:12px; color:var(--text2)">Adicionar Entrada</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-select" id="new-codex-type">
+          <option value="character">Personagem</option>
+          <option value="location">Local</option>
+          <option value="lore">Lore</option>
+          <option value="object">Objeto</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nome</label>
+        <input type="text" class="form-input" id="new-codex-name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descrição</label>
+      <textarea class="form-textarea" id="new-codex-desc" rows="3"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-codex')">Fechar</button>
+      <button class="btn btn-primary" onclick="addCodexEntry()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal-overlay" id="modal-export" style="display:none">
+  <div class="modal" style="width:360px">
+    <h2>Exportar</h2>
+    <p style="color:var(--text2); font-size:13px; margin-bottom:20px">Compila todas as cenas do projeto em um arquivo.</p>
+    <div class="modal-actions" style="flex-direction:column; align-items:stretch">
+      <button class="btn btn-primary" onclick="exportProject('txt')">↓ Exportar como TXT</button>
+      <button class="btn btn-secondary" onclick="exportProject('md')">↓ Exportar como Markdown</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-export')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
