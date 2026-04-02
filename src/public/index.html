@@ -113,7 +113,7 @@
           <div id="prompt-editor-area">
             <div class="prompt-label">System Prompt</div>
             <textarea class="prompt-textarea" id="custom-system" rows="4"></textarea>
-            <div class="prompt-label">User Prompt <span style="color:var(--text3); font-size:10px; text-transform:none">(use {scene_summary}, {characters}, {location}, {previous_scene}, {style_notes})</span></div>
+            <div class="prompt-label">User Prompt <span style="color:var(--text3); font-size:10px; text-transform:none">(use {scene_summary}, {chapter_summary}, {prev_chapter_summary}, {previous_scene}, {characters}, {location}, {style_notes})</span></div>
             <textarea class="prompt-textarea" id="custom-user" rows="6"></textarea>
             <div style="display:flex; gap:6px; margin-top:4px">
               <button class="btn btn-secondary btn-sm" onclick="saveCurrentTemplate()">Salvar template</button>
@@ -174,10 +174,23 @@
 <div class="modal-overlay" id="modal-import" style="display:none">
   <div class="modal">
     <h2>Importar do Outline Forge</h2>
-    <p style="color:var(--text2); font-size:13px; margin-bottom:16px">Cole o JSON exportado pelo Outline Forge ou use o formato abaixo.</p>
-    <div class="form-group">
-      <label class="form-label">JSON do Outline Forge</label>
-      <textarea class="form-textarea" id="import-json" rows="10" placeholder='{"title":"Meu Romance","type":"novel","style_notes":"...","chapters":[{"title":"Capítulo 1","scenes":[{"title":"Cena 1","summary":"..."}]}],"codex":[{"type":"character","name":"Ana","description":"..."}]}'></textarea>
+    <div class="type-toggle" style="margin-bottom:16px">
+      <button class="active" onclick="switchImportTab('md', this)">outline.md</button>
+      <button onclick="switchImportTab('json', this)">JSON</button>
+    </div>
+    <div id="import-tab-md">
+      <p style="color:var(--text2); font-size:13px; margin-bottom:16px">Cole o conteúdo do arquivo <code>outline.md</code> gerado pelo Outline Forge.</p>
+      <div class="form-group">
+        <label class="form-label">Conteúdo do outline.md</label>
+        <textarea class="form-textarea" id="import-md" rows="10" placeholder="# Título do Livro&#10;&#10;## Chapter 1 — Capítulo Um&#10;&#10;Resumo do capítulo aqui.&#10;&#10;**Scenes**&#10;&#10;Scene 1: Descrição da primeira cena&#10;Scene 2: Descrição da segunda cena"></textarea>
+      </div>
+    </div>
+    <div id="import-tab-json" style="display:none">
+      <p style="color:var(--text2); font-size:13px; margin-bottom:16px">Cole o JSON exportado pelo Outline Forge.</p>
+      <div class="form-group">
+        <label class="form-label">JSON do Outline Forge</label>
+        <textarea class="form-textarea" id="import-json" rows="10" placeholder='{"title":"Meu Romance","type":"novel","style_notes":"...","chapters":[{"title":"Capítulo 1","scenes":[{"title":"Cena 1","summary":"..."}]}],"codex":[{"type":"character","name":"Ana","description":"..."}]}'></textarea>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modal-import')">Cancelar</button>

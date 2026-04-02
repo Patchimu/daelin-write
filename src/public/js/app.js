@@ -91,7 +91,40 @@ async function createProject() {
   notify('Projeto criado!', 'success');
 }
 
+let importMode = 'md';
+
+function switchImportTab(mode, btn) {
+  importMode = mode;
+  document.getElementById('import-tab-md').style.display = mode === 'md' ? 'block' : 'none';
+  document.getElementById('import-tab-json').style.display = mode === 'json' ? 'block' : 'none';
+  btn.closest('.type-toggle').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 async function importProject() {
+  if (importMode === 'md') {
+    await importOutline();
+  } else {
+    await importJSON();
+  }
+}
+
+async function importOutline() {
+  const markdown = document.getElementById('import-md').value.trim();
+  if (!markdown) return notify('Cole o conteúdo do outline.md', 'error');
+  const res = await fetch('/api/projects/import-outline', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ markdown })
+  });
+  const result = await res.json();
+  if (result.error) return notify(result.error, 'error');
+  closeModal('modal-import');
+  await openProject(result.project_id);
+  notify('Outline importado!', 'success');
+}
+
+async function importJSON() {
   const raw = document.getElementById('import-json').value.trim();
   let data;
   try { data = JSON.parse(raw); } catch { return notify('JSON inválido', 'error'); }
@@ -519,7 +552,13 @@ function showNewProjectModal() {
   document.querySelectorAll('.type-toggle button').forEach((b, i) => b.classList.toggle('active', i === 0));
   openModal('modal-new-project');
 }
-function showImportModal() { openModal('modal-import'); }
+function showImportModal() {
+  importMode = 'md';
+  document.getElementById('import-tab-md').style.display = 'block';
+  document.getElementById('import-tab-json').style.display = 'none';
+  document.querySelectorAll('#modal-import .type-toggle button').forEach((b, i) => b.classList.toggle('active', i === 0));
+  openModal('modal-import');
+}
 function showAddChapterModal() { document.getElementById('new-chapter-title').value = ''; openModal('modal-add-chapter'); }
 function showExportModal() { openModal('modal-export'); }
 

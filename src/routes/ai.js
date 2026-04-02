@@ -24,6 +24,10 @@ router.post('/generate', async (req, res) => {
     .filter(s => s.chapter_id === scene.chapter_id && s.position < scene.position)
     .sortBy('position').last().value();
 
+  const prevChapter = db.get('chapters')
+    .filter(c => c.project_id === project.id && c.position < chapter.position)
+    .sortBy('position').last().value();
+
   const characters = codex.filter(e => e.type === 'character').map(c => `${c.name}: ${c.description}`).join('\n') || 'Não definido';
   const location = codex.filter(e => e.type === 'location').map(l => `${l.name}: ${l.description}`).join('\n') || 'Não definido';
 
@@ -33,9 +37,12 @@ router.post('/generate', async (req, res) => {
     location,
     previous_scene: prevScene?.content ? prevScene.content.slice(-600) : 'Esta é a primeira cena.',
     scene_summary: scene.summary || scene.title,
+    chapter_summary: chapter.summary || '',
+    prev_chapter_summary: prevChapter?.summary || 'Este é o primeiro capítulo.',
   };
 
-  const systemPrompt = custom_system || '';
+  const langInstruction = 'Detecte o idioma do sumário da cena e escreva toda a cena nesse mesmo idioma.';
+  const systemPrompt = [custom_system, langInstruction].filter(Boolean).join('\n');
   const userPrompt = fillTemplate(custom_user || '', vars);
 
   const connector = settings.connector || 'openai';

@@ -46,6 +46,65 @@ router.post('/', (req, res) => {
   res.json({ id, title, type });
 });
 
+function parseOutlineMarkdown(markdown) {
+  const lines = markdown.split('\n');
+  let title = 'Importado';
+  const chapters = [];
+  let currentChapter = null;
+  let inScenes = false;
+  let summaryBuffer = [];
+
+  function finalizeChapter() {
+    if (currentChapter) {
+      currentChapter.summary = summaryBuffer.join(' ').trim();
+      chapters.push(currentChapter);
+    }
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (/^# [^#]/.test(trimmed)) {
+      title = trimmed.slice(2).trim();
+    } else if (/^## /.test(trimmed)) {
+      finalizeChapter();
+      currentChapter = { title: trimmed.slice(3).trim(), summary: '', scenes: [] };
+      inScenes = false;
+      summaryBuffer = [];
+    } else if (/^\*\*[Cc]enas?\*\*$/.test(trimmed) || /^\*\*[Ss]cenes?\*\*$/.test(trimmed)) {
+      inScenes = true;
+    } else if (currentChapter && inScenes && /^[Ss]cene \d+:/i.test(trimmed)) {
+      const colonIdx = trimmed.indexOf(':');
+      const description = trimmed.slice(colonIdx + 1).trim();
+      const match = trimmed.match(/^[Ss]cene (\d+):/i);
+      currentChapter.scenes.push({ title: `Cena ${match[1]}`, summary: description });
+    } else if (currentChapter && !inScenes && trimmed) {
+      summaryBuffer.push(trimmed);
+    }
+  }
+  finalizeChapter();
+  return { title, chapters };
+}
+
+router.post('/import-outline', (req, res) => {
+  const { markdown, project_type = 'novel', style_notes = '' } = req.body;
+  if (!markdown) return res.status(400).json({ error: 'Markdown vazio' });
+
+  const { title, chapters } = parseOutlineMarkdown(markdown);
+  const projectId = uuidv4();
+  const now = new Date().toISOString();
+  db.get('projects').push({ id: projectId, title, type: project_type, style_notes, created_at: now, updated_at: now }).write();
+
+  chapters.forEach((ch, ci) => {
+    const chId = uuidv4();
+    db.get('chapters').push({ id: chId, project_id: projectId, title: ch.title, summary: ch.summary || '', position: ci }).write();
+    ch.scenes.forEach((sc, si) => {
+      db.get('scenes').push({ id: uuidv4(), chapter_id: chId, title: sc.title, summary: sc.summary || '', content: '', position: si, word_count: 0 }).write();
+    });
+  });
+
+  res.json({ success: true, project_id: projectId });
+});
+
 router.post('/import', (req, res) => {
   const data = req.body;
   const projectId = uuidv4();
