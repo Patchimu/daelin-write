@@ -112,31 +112,39 @@ async function importProject() {
 async function importOutline() {
   const markdown = document.getElementById('import-md').value.trim();
   if (!markdown) return notify('Cole o conteúdo do outline.md', 'error');
-  const res = await fetch('/api/projects/import-outline', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ markdown })
-  });
-  const result = await res.json();
-  if (result.error) return notify(result.error, 'error');
-  closeModal('modal-import');
-  await openProject(result.project_id);
-  notify('Outline importado!', 'success');
+  try {
+    const res = await fetch('/api/projects/import-outline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ markdown })
+    });
+    const result = await res.json();
+    if (result.error) return notify(result.error, 'error');
+    closeModal('modal-import');
+    await openProject(result.project_id);
+    notify('Outline importado!', 'success');
+  } catch (e) {
+    notify('Erro ao importar: ' + e.message, 'error');
+  }
 }
 
 async function importJSON() {
   const raw = document.getElementById('import-json').value.trim();
   let data;
   try { data = JSON.parse(raw); } catch { return notify('JSON inválido', 'error'); }
-  const res = await fetch('/api/projects/import', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  const result = await res.json();
-  closeModal('modal-import');
-  await openProject(result.project_id);
-  notify('Projeto importado!', 'success');
+  try {
+    const res = await fetch('/api/projects/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    closeModal('modal-import');
+    await openProject(result.project_id);
+    notify('Projeto importado!', 'success');
+  } catch (e) {
+    notify('Erro ao importar: ' + e.message, 'error');
+  }
 }
 
 // ── SIDEBAR ──
