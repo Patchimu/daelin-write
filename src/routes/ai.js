@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/database');
+const { getSettings, getProjectData, saveProjectData, findProjectDataBySceneId } = require('../db/database');
 const { v4: uuidv4 } = require('uuid');
 const fetch = require('node-fetch');
 
@@ -9,24 +9,25 @@ function fillTemplate(template, vars) {
 }
 
 router.post('/generate', async (req, res) => {
-  const settings = db.get('settings').value();
+  const { settings } = getSettings();
   if (!settings.api_key) return res.status(400).json({ error: 'API key não configurada. Vá em Configurações.' });
 
   const { scene_id, custom_system, custom_user } = req.body;
-  const scene = db.get('scenes').find({ id: scene_id }).value();
-  if (!scene) return res.status(404).json({ error: 'Cena não encontrada' });
+  const pData = findProjectDataBySceneId(scene_id);
+  if (!pData) return res.status(404).json({ error: 'Cena não encontrada' });
 
-  const chapter = db.get('chapters').find({ id: scene.chapter_id }).value();
-  const project = db.get('projects').find({ id: chapter.project_id }).value();
-  const codex = db.get('codex').filter({ project_id: project.id }).value();
+  const scene = pData.scenes.find(s => s.id === scene_id);
+  const chapter = pData.chapters.find(c => c.id === scene.chapter_id);
+  const project = pData.project;
+  const codex = pData.codex || [];
 
-  const prevScene = db.get('scenes')
+  const prevScene = (pData.scenes || [])
     .filter(s => s.chapter_id === scene.chapter_id && s.position < scene.position)
-    .sortBy('position').last().value();
+    .sort((a, b) => b.position - a.position)[0];
 
-  const prevChapter = db.get('chapters')
-    .filter(c => c.project_id === project.id && c.position < chapter.position)
-    .sortBy('position').last().value();
+  const prevChapter = (pData.chapters || [])
+    .filter(c => c.position < chapter.position)
+    .sort((a, b) => b.position - a.position)[0];
 
   const characters = codex.filter(e => e.type === 'character').map(c => `${c.name}: ${c.description}`).join('\n') || 'Não definido';
   const location = codex.filter(e => e.type === 'location').map(l => `${l.name}: ${l.description}`).join('\n') || 'Não definido';
@@ -51,7 +52,6 @@ router.post('/generate', async (req, res) => {
 
   try {
     let text = '';
-
     if (connector === 'claude') {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -72,7 +72,6 @@ router.post('/generate', async (req, res) => {
       if (d.error) throw new Error(d.error.message || JSON.stringify(d.error));
       text = d.choices[0].message.content;
     }
-
     res.json({ text });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -80,18 +79,22 @@ router.post('/generate', async (req, res) => {
 });
 
 router.post('/chat', async (req, res) => {
-  const settings = db.get('settings').value();
+  const { settings } = getSettings();
   if (!settings.api_key) return res.status(400).json({ error: 'API key não configurada.' });
 
   const { project_id, message } = req.body;
-  const project = db.get('projects').find({ id: project_id }).value();
-  const codex = db.get('codex').filter({ project_id }).value();
-  const history = db.get('chat_messages').filter({ project_id }).sortBy('created_at').value();
+  const pData = getProjectData(project_id);
+  if (!pData) return res.status(404).json({ error: 'Projeto não encontrado' });
+
+  const project = pData.project;
+  const codex = pData.codex || [];
+  const history = (pData.chat_messages || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
   const codexSummary = codex.map(e => `[${e.type}] ${e.name}: ${e.description}`).join('\n');
   const systemPrompt = `Você é um assistente especializado no projeto "${project.title}".\nContexto: ${project.style_notes || ''}\nCodex:\n${codexSummary || 'Vazio.'}`;
 
-  db.get('chat_messages').push({ id: uuidv4(), project_id, role: 'user', content: message, created_at: new Date().toISOString() }).write();
+  pData.chat_messages = pData.chat_messages || [];
+  pData.chat_messages.push({ id: uuidv4(), project_id, role: 'user', content: message, created_at: new Date().toISOString() });
 
   const messages = [...history.map(m => ({ role: m.role, content: m.content })), { role: 'user', content: message }];
   const connector = settings.connector || 'openai';
@@ -119,7 +122,8 @@ router.post('/chat', async (req, res) => {
       reply = d.choices[0].message.content;
     }
 
-    db.get('chat_messages').push({ id: uuidv4(), project_id, role: 'assistant', content: reply, created_at: new Date().toISOString() }).write();
+    pData.chat_messages.push({ id: uuidv4(), project_id, role: 'assistant', content: reply, created_at: new Date().toISOString() });
+    saveProjectData(project_id, pData);
     res.json({ reply });
   } catch (e) {
     res.status(500).json({ error: e.message });

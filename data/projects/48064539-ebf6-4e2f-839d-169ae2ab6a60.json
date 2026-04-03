@@ -1,0 +1,83 @@
+{
+  "project": {
+    "id": "48064539-ebf6-4e2f-839d-169ae2ab6a60",
+    "title": "Meu Livro",
+    "type": "novel",
+    "style_notes": "",
+    "created_at": "2026-04-02T23:13:17.839Z",
+    "updated_at": "2026-04-02T23:13:17.839Z",
+    "chapters": [
+      {
+        "id": "0fb65d96-57ab-4a9e-9621-23d5733b319e",
+        "project_id": "48064539-ebf6-4e2f-839d-169ae2ab6a60",
+        "title": "Chapter 1 — O Início",
+        "summary": "Resumo do capítulo.",
+        "position": 0,
+        "scenes": [
+          {
+            "id": "7d03c0c1-f7c4-4aa0-977b-c44ac509350b",
+            "title": "Cena 1",
+            "summary": "A protagonista acorda",
+            "position": 0,
+            "word_count": 0
+          },
+          {
+            "id": "488216de-e951-48ae-ad79-5710833cee89",
+            "title": "Cena 2",
+            "summary": "O encontro inesperado",
+            "position": 1,
+            "word_count": 0
+          }
+        ]
+      }
+    ],
+    "codex": []
+  },
+  "chapters": [
+    {
+      "id": "0fb65d96-57ab-4a9e-9621-23d5733b319e",
+      "project_id": "48064539-ebf6-4e2f-839d-169ae2ab6a60",
+      "title": "Chapter 1 — O Início",
+      "summary": "Resumo do capítulo.",
+      "position": 0,
+      "scenes": [
+        {
+          "id": "7d03c0c1-f7c4-4aa0-977b-c44ac509350b",
+          "title": "Cena 1",
+          "summary": "A protagonista acorda",
+          "position": 0,
+          "word_count": 0
+        },
+        {
+          "id": "488216de-e951-48ae-ad79-5710833cee89",
+          "title": "Cena 2",
+          "summary": "O encontro inesperado",
+          "position": 1,
+          "word_count": 0
+        }
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "7d03c0c1-f7c4-4aa0-977b-c44ac509350b",
+      "chapter_id": "0fb65d96-57ab-4a9e-9621-23d5733b319e",
+      "title": "Cena 1",
+      "summary": "A protagonista acorda",
+      "content": "",
+      "position": 0,
+      "word_count": 0
+    },
+    {
+      "id": "488216de-e951-48ae-ad79-5710833cee89",
+      "chapter_id": "0fb65d96-57ab-4a9e-9621-23d5733b319e",
+      "title": "Cena 2",
+      "summary": "O encontro inesperado",
+      "content": "",
+      "position": 1,
+      "word_count": 0
+    }
+  ],
+  "codex": [],
+  "chat_messages": []
+}

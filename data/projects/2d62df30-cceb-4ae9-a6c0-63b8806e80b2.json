@@ -1,0 +1,81 @@
+{
+  "project": {
+    "id": "2d62df30-cceb-4ae9-a6c0-63b8806e80b2",
+    "title": "nome",
+    "type": "novel",
+    "style_notes": "muitas coisas",
+    "created_at": "2026-04-02T22:40:40.870Z",
+    "updated_at": "2026-04-02T22:48:18.440Z",
+    "chapters": [
+      {
+        "id": "a79c67fb-f6ab-4977-ad00-5f57d383eae7",
+        "project_id": "2d62df30-cceb-4ae9-a6c0-63b8806e80b2",
+        "title": "capitulo 1",
+        "position": 0,
+        "scenes": [
+          {
+            "id": "6a79b4fe-ac11-4692-bc7e-a50eaf9db8c5",
+            "title": "cena 1",
+            "summary": "uma cena",
+            "position": 0,
+            "word_count": 85
+          },
+          {
+            "id": "a6f6ddf6-72fc-4486-9f64-383aa09b542e",
+            "title": "O encontro",
+            "summary": "Ana chega ao aeroporto de Roma e vê Marco pela primeira vez. Ele está segurando uma placa com o nome dela. Tensão imediata entre os dois.",
+            "position": 1,
+            "word_count": 0
+          }
+        ]
+      }
+    ],
+    "codex": []
+  },
+  "chapters": [
+    {
+      "id": "a79c67fb-f6ab-4977-ad00-5f57d383eae7",
+      "project_id": "2d62df30-cceb-4ae9-a6c0-63b8806e80b2",
+      "title": "capitulo 1",
+      "position": 0,
+      "scenes": [
+        {
+          "id": "6a79b4fe-ac11-4692-bc7e-a50eaf9db8c5",
+          "title": "cena 1",
+          "summary": "uma cena",
+          "position": 0,
+          "word_count": 85
+        },
+        {
+          "id": "a6f6ddf6-72fc-4486-9f64-383aa09b542e",
+          "title": "O encontro",
+          "summary": "Ana chega ao aeroporto de Roma e vê Marco pela primeira vez. Ele está segurando uma placa com o nome dela. Tensão imediata entre os dois.",
+          "position": 1,
+          "word_count": 0
+        }
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "6a79b4fe-ac11-4692-bc7e-a50eaf9db8c5",
+      "chapter_id": "a79c67fb-f6ab-4977-ad00-5f57d383eae7",
+      "title": "cena 1",
+      "summary": "uma cena",
+      "content": "Parece que os campos do seu projeto ainda estão com os valores padrão — **contexto, personagens, local e sumário** não foram preenchidos com informações reais.\n\nPara que eu possa escrever sua cena, preciso que você me forneça:\n\n1. **Contexto do projeto** — Qual é a história? Gênero, tom, universo?\n2. **Personagens presentes** — Quem são eles? Nomes, personalidades, relações?\n3. **Local** — Onde a cena acontece?\n4. **Sumário da cena** — O que deve acontecer nesta cena?\n\nPreencha esses detalhes e escreverei com prazer! ✍️",
+      "position": 0,
+      "word_count": 85
+    },
+    {
+      "id": "a6f6ddf6-72fc-4486-9f64-383aa09b542e",
+      "chapter_id": "a79c67fb-f6ab-4977-ad00-5f57d383eae7",
+      "title": "O encontro",
+      "summary": "Ana chega ao aeroporto de Roma e vê Marco pela primeira vez. Ele está segurando uma placa com o nome dela. Tensão imediata entre os dois.",
+      "content": "# O Peso de um Nome\n\nO voo de Lisboa havia durado duas horas e quarenta minutos. Ana tinha contado cada uma delas.\n\nNão porque estivesse ansiosa — ela se recusava a usar essa palavra — mas porque o assento junto à janela estava ocupado por uma criança de quatro anos com uma capacidade surpreendente para o caos, e o café do carrinho de bordo tinha o sabor inconfundível de arrependimento. Ela havia desembarcado no Aeroporto Leonardo da Vinci com a mala de mão no ombro, o casaco dobrado no braço e a certeza absoluta de que aquela missão era um erro.\n\n*Três semanas em Roma.* O editor tinha dito como se fosse um presente.\n\nAna atravessou o corredor de chegadas com passadas longas, os olhos já varrendo o espaço com o automatismo de quem chegou cedo demais a lugares de mais. O saguão cheirava a café, a perfume caro e àquela qualidade específica do ar condicionado europeu que nunca conseguia decidir entre o frio e o morno. Grupos de turistas se aglomeravam com mochilas coloridas. Motoristas de fato escuro seguravam tablets com nomes iluminados.\n\nFoi então que ela o viu.\n\nNão imediatamente. O processo levou cerca de três segundos — o tempo suficiente para seus olhos passarem por ele, voltarem, e ficarem parados sem que ela tivesse dado essa ordem.\n\nEle estava apoiado contra uma coluna com a displicência calculada de quem aprendeu a ocupar espaço sem pedir licença. Cabelo escuro, levemente despenteado na parte da frente, como se o vento tivesse passado por lá e ele não tivesse considerado relevante fazer algo a respeito. Ombros largos sob uma camisa branca com as mangas dobradas até os cotovelos — em novembro, notou ela, com uma irritação que não conseguiu justificar. Na mão direita, segurava uma folha de papel dobrada ao meio e aberta às pressas, com letras escritas à mão em preto.\n\n**ANA FERREIRA**\n\nO nome estava ligeiramente torto.\n\nEla respirou fundo pelo nariz, ajustou a alça da mala no ombro e caminhou na direção dele. Ele não a viu chegar — ou fingiu não ver, o que era uma possibilidade que ela guardou mentalmente para análise posterior. Estava olhando para o lado oposto do corredor com uma expressão que ela classificou, provisoriamente, como *tédio aristocrático*.\n\n— Sou eu — disse ela, em italiano, quando chegou a dois metros de distância.\n\nEle virou a cabeça. Devagar.\n\nOs olhos eram escuros, quase negros, e tinham aquela qualidade particular de quem está acostumado a avaliar coisas e pessoas com a mesma objetividade clínica. Percorreram-na de cima a baixo — não de forma invasiva, o que teria sido mais fácil de catalogar, mas com uma atenção específica e breve, como se estivesse confirmando uma informação que já havia recebido e que correspondia, dentro de uma margem aceitável, ao esperado.\n\n— Ana Ferreira — disse ele. Não era uma pergunta.\n\nA voz era grave, com aquela cadência romana que transformava as palavras em algo ligeiramente mais longo do que precisavam ser. Ele baixou o papel.\n\n— Marco Ricci — respondeu ela, porque sabia o nome. Tinha pesquisado. Claro que tinha pesquisado. — Obrigada por vir.\n\nA frase saiu mais formal do que pretendia. Ele pareceu notar.\n\n— É o meu trabalho — disse ele, em português, com um sotaque que era mais correto do que ela esperava e mais irritante do exatamente por isso.\n\nAna olhou para ele por um segundo a mais do que planejava.\n\n— Não precisava mudar de idioma.\n\n— Não precisava, não. — Ele dobrou o papel com um movimento único e limpo, enfiou no bolso da calça. — Mas pareceu educado.\n\nHavia algo na forma como ele disse *educado* que sugeria que a palavra estava sendo usada com alguma reserva. Ana decidiu arquivar isso também.\n\n— Tenho mais uma mala no carrossel — disse ela, retomando o italiano com uma deliberação que esperava ser suficientemente visível.\n\n— Eu sei. — Ele se desprendeu da coluna e começou a andar, assumindo naturalmente que ela o seguiria. — Brunetti me enviou a lista de bagagens.\n\n*Brunetti me enviou a lista de bagagens.* Ana repetiu a frase mentalmente enquanto o acompanhava, tentando decidir se aquilo era eficiência ou condescendência. O fato de não conseguir determinar qual das duas a incomodava mais do que qualquer uma das opções individualmente.\n\nO carrossel já estava em movimento. Ele parou a uma distância calculada da fila, os braços cruzados, e esperou. Não ofereceu ajuda, o que ela teria recusado. Não fez conversa, o que ela teria achado irritante. Ficou parado, em silêncio, com aquela presença densa e levemente insuportável de quem não sente a necessidade de preencher o ar com palavras.\n\nAna identificou sua mala — cinza, com uma fita laranja atada na alça, sistema que usava desde a faculdade — e estendeu o braço para puxá-la.\n\nEle foi mais rápido.\n\nNão era um gesto grandioso. Apenas um movimento preciso, o braço passando pela sua frente sem tocá-la, a mão fechando-se na alça antes que ela chegasse lá. Ele pousou a mala ao lado dela com a mesma naturalidade com que tinha dobrado o papel.\n\n— Consigo carregar a minha própria mala — disse ela.\n\n— Tenho certeza que consegue. — Ele já estava andando em direção à saída. — O carro está lá fora. Brunetti disse que tem reunião amanhã às nove.\n\nAna ficou parada por exatamente dois segundos.\n\nDepois pegou a mala de mão, endireitou o casaco no braço, e foi atrás dele.\n\nRoma esperava do lado de fora com aquela luz de novembro que era dourada e fria ao mesmo tempo, e Ana Ferreira teve a sensação nítida, inconfortável e completamente inoportuna, de que as próximas três semanas seriam absolutamente impossíveis.\n\nAinda não sabia se isso era bom ou ruim.\n\n---\n\n*Continuará.*",
+      "position": 1,
+      "word_count": 960
+    }
+  ],
+  "codex": [],
+  "chat_messages": []
+}

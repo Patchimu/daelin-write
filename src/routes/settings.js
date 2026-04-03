@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/database');
+const { getSettings, saveSettings } = require('../db/database');
 
-router.get('/', (req, res) => res.json(db.get('settings').value()));
+router.get('/', (req, res) => {
+  const { settings } = getSettings();
+  res.json(settings || {});
+});
 
 router.post('/', (req, res) => {
-  const current = db.get('settings').value();
-  db.set('settings', { ...current, ...req.body }).write();
+  const data = getSettings();
+  data.settings = { ...(data.settings || {}), ...req.body };
+  saveSettings(data);
   res.json({ success: true });
 });
 
